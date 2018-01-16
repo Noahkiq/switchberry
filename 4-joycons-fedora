@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# comment out lines 20-23 after you run this script once,
+# otherwise ~/.profile will grow everytime you run the script
+
+sudo dnf install -y binutils bison systemd-devel screen
+
+# install gvm
+bash < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
+source ~/.gvm/scripts/gvm
+
+# install go
+gvm install go1.4 --binary
+gvm use go1.4
+export GOROOT_BOOTSTRAP=$GOROOT
+gvm install go1.8 --binary
+gvm use go1.8 --default
+
+mkdir -p ~/go/src/github.com/riking
+cat << "EOF" >> ~/.profile
+export PATH=$PATH:/usr/local/go/bin
+export GOPATH=$HOME/go
+EOF
+source ~/.profile
+# cat /proc/bus/input/devices
+cd ~/go/src/github.com/riking
+git clone https://github.com/riking/joycon.git
+cd joycon/prog4
+go get ./...
+cd ../..
+# comment out the below line if you want to compile jcmapper too
+rm -rf joycon
+cd
